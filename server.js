@@ -11,7 +11,7 @@ wss.on('connection', function connection(ws) {
 
   ws.on('message', function incoming(message) {
   const text = message.toString(); // buffer'dan string'e çevir
-  console.log('Received:', text);
+  console.log('Received:', text.toString);
 
   clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
