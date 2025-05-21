@@ -10,15 +10,16 @@ wss.on('connection', function connection(ws) {
   clients.push(ws);
 
   ws.on('message', function incoming(message) {
-  const text = message.toString();
+  const text = message.toString(); // buffer'dan string'e çevir
   console.log('Received:', text);
 
   clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(text);
+      client.send(text); // artık düz metin gidiyor
     }
   });
 });
+
 
   ws.on('close', () => {
     clients = clients.filter(c => c !== ws);
