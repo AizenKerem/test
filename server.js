@@ -10,15 +10,15 @@ wss.on('connection', function connection(ws) {
   clients.push(ws);
 
   ws.on('message', function incoming(message) {
-    console.log('Received:', message);
+  const text = message.toString();
+  console.log('Received:', text);
 
-    // Bütün bağlı istemcilere mesajı gönder
-    clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
+  clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(text);
+    }
   });
+});
 
   ws.on('close', () => {
     clients = clients.filter(c => c !== ws);
