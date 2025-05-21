@@ -30,11 +30,10 @@ wss.on('connection', function connection(ws) {
 
     // Tüm diğer istemcilere gönder
     clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(fullMessage);
-      }
-    });
-  });
+    if (client.readyState === WebSocket.OPEN) {
+        client.send(fullMessage); // Göndericiyi hariç tutmadan gönder
+    }
+});
 
   ws.on('close', () => {
     clients = clients.filter(c => c !== ws);
