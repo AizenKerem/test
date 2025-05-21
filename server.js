@@ -10,16 +10,31 @@ wss.on('connection', function connection(ws) {
   clients.push(ws);
 
   ws.on('message', function incoming(message) {
-  const text = message.toString(); // buffer'dan string'e çevir
-  console.log('Received:', text.toString);
+    const text = message.toString(); // buffer'dan string'e çevir
 
-  clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(text); // artık düz metin gidiyor
+    console.log('Received:', text);
+
+    // JSON kontrolü
+    let parsed;
+    try {
+      parsed = JSON.parse(text); // {"name":"Ali","message":"Merhaba"}
+    } catch (e) {
+      console.log("Geçersiz JSON:", text);
+      return;
     }
-  });
-});
 
+    const name = parsed.name || "Unknown";
+    const content = parsed.message || "";
+
+    const fullMessage = JSON.stringify({ name, message: content });
+
+    // Tüm diğer istemcilere gönder
+    clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(fullMessage);
+      }
+    });
+  });
 
   ws.on('close', () => {
     clients = clients.filter(c => c !== ws);
